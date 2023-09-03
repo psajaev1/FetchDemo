@@ -53,6 +53,11 @@ public class FetchService {
 
         int addPoints = receipt.getItems().stream()
             .map(item -> {
+
+                if (Objects.isNull(item.shortDescription()) || Objects.isNull(item.price()))
+                    throw new BadReceiptException();
+
+
                 String description = item.shortDescription();
                 int itemPoints = 0;
                 if (description.trim().length() % 3 == 0) {
