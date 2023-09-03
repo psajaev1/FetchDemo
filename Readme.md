@@ -47,7 +47,8 @@ GET endpoint
 `curl --location 'http://localhost:8083/receipts/f3d78f16-2247-486f-a07d-0606aa117367/points'`
 
 # In Memory Solution 
-I used a in memory solution to store the uuid and points for a reciept. I created a map bean that gets created at runtime and will exist while the application is running. 
+I used a in memory solution to store the uuid and points for a reciept. I created a map bean that gets created at runtime and will exist while the application is running.   
+The map has reciept ID as the key and the points of the reciept as the value
 
 # Error Handling  
 
