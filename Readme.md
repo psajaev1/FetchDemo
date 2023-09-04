@@ -1,6 +1,10 @@
 ## FetchDemo
 Demo for Fetch coding assessment. This test was done using Spring boot and gradle. Dockerfile is provided for running this application locally. 
 
+This API has two endpoints 
+1. POST `/receipts/process`
+2. GET `/receipts/{id}/points`
+
 # Running the application 
 Clone the directory and enter the root level 
 1. `./gradlew build` -- this command will generate the JAR that the dockerfile uses
@@ -10,7 +14,7 @@ Clone the directory and enter the root level
 
 # Testing the application 
 
-I was using the following CURL commands for testing this service 
+I was using the following CURL commands for testing this service. These examples were taken from the github test repo for this assignment.  
 
 POST endpoint
 
@@ -49,15 +53,15 @@ GET endpoint
 # Error Handling  
 
 For error handling, the POST endpoint will return a custom exception with a 400 BAD_REQUEST when one of the fields is missing or improper date format
-GET endpoint will return a 404 when the receipt ID is not associated with what is stored. 
+GET endpoint will return a 404 with custom exception when the receipt ID is not associated with what is stored. 
 Null checks are done for all of the reciept object fields. 
 
 # Date Validation Checks 
 Validation checks for dates are done to make sure the two fields aren't null and that they are in the correct format.  
-Proper format for dates should be "yyyy-MM-dd" and "HH:mm". 
+Proper format for dates should be "yyyy-MM-dd" and "HH:mm".
 
 # In Memory Solution 
-I used a in memory solution to store the uuid and points for a reciept. I created a map bean that gets created at runtime and will exist while the application is running.   
+I used a in memory solution to store the generated uuid and points for a reciept. I created a map bean that gets created at runtime and will exist while the application is running.   
 The map has reciept ID as the key and the points of the reciept as the value
 
 
