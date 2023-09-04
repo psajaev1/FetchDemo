@@ -1,25 +1,20 @@
 package com.example.demo.service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
 import com.example.demo.model.BadReceiptException;
+import com.example.demo.model.BadTimeException;
 import com.example.demo.model.IdResponse;
 import com.example.demo.model.PointsResponse;
 import com.example.demo.model.Receipt;
 import com.example.demo.model.ReceiptNotFoundException;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -32,15 +27,19 @@ public class FetchService {
 
     /* 
      * Method for processing receipts and assigning a point value to a randomly generated UUID
+     * Also does date validation and null item field validations
+     * @Params Receipt Object 
+     * @Returns IdResponse Object
      */
     public IdResponse processReceipt(Receipt receipt) {
 
-        validateReceipt(receipt);
         int points = 0;
 
+        // One point for every alphanumeric character in the retailer name.
         long countAlphaNumeric = receipt.getRetailer().chars().filter(Character::isLetterOrDigit).count();
         points += countAlphaNumeric;
 
+        // 50 points if the total is a round dollar amount with no cents.
         double purchaseTotal = Double.parseDouble(receipt.getTotal());
         if (purchaseTotal % 1 == 0)
             points += 50;
@@ -48,15 +47,15 @@ public class FetchService {
         if (purchaseTotal % 0.25 == 0)
             points += 25;
 
+        // 5 points for every two items on the receipt.
         int itemPairs = receipt.getItems().size() / 2;
         points += (itemPairs * 5);
 
+        // trim length point calculations
         int addPoints = receipt.getItems().stream()
             .map(item -> {
-
                 if (Objects.isNull(item.shortDescription()) || Objects.isNull(item.price()))
                     throw new BadReceiptException();
-
 
                 String description = item.shortDescription();
                 int itemPoints = 0;
@@ -68,23 +67,17 @@ public class FetchService {
 
         points += addPoints;
 
-        SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy-MM-dd");  
-        SimpleDateFormat formatter2 = new SimpleDateFormat("HH:mm");
-        Date calendarDate; 
-        Date timeDate;
+        // input date validation and calculations
+        final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        final DateTimeFormatter DATE_TIME_FORMATTER_TWO = DateTimeFormatter.ofPattern("HH:mm");
+        LocalDate dateByDay = isValidLocalDate(receipt.getPurchaseDate(), DATE_TIME_FORMATTER);
+        LocalTime dateByHour = isValidLocalTime(receipt.getPurchaseTime(), DATE_TIME_FORMATTER_TWO);
 
-        // try catch block is needed when using the SimpleDateFormat
-        try {
-            calendarDate = formatter1.parse(receipt.getPurchaseDate());
-            timeDate = formatter2.parse(receipt.getPurchaseTime());
+        if (dateByDay != null && dateByDay.getDayOfMonth() % 2 == 1)
+            points += 6;
+        if (dateByHour != null &&  dateByHour.getHour() < 16 && ((dateByHour.getHour() == 14 && dateByHour.getMinute() > 0) || dateByHour.getHour() == 15))
+            points += 10;
 
-            if (calendarDate != null && calendarDate.getDate() % 2 == 1)
-                points += 6;
-            if (timeDate != null &&  timeDate.getHours() < 16 && ((timeDate.getHours() == 14 && timeDate.getMinutes() > 0) || timeDate.getHours() == 15))
-                points += 10;
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
 
         String uuid = UUID.randomUUID().toString();
         log.info(String.format("Final Value of points for id receipt %s is %s", uuid, String.valueOf(points)));
@@ -102,15 +95,28 @@ public class FetchService {
     }
 
     /* 
-     * Validation of POST reciept Request body
+     * Checks if the purchaseDate is valid
      */
-    public void validateReceipt(Receipt reciept) {
-        if (Objects.isNull(reciept.getItems())  || 
-            Objects.isNull(reciept.getRetailer()) || 
-            Objects.isNull(reciept.getPurchaseDate()) || 
-            Objects.isNull(reciept.getPurchaseTime()) || 
-            Objects.isNull(reciept.getTotal())) {
-                throw new BadReceiptException();
+    public static LocalDate isValidLocalDate(String dateStr, DateTimeFormatter dateFormatter) {
+        LocalDate date = null;
+        try {
+          date = LocalDate.parse(dateStr, dateFormatter);
+        } catch (DateTimeParseException e) {
+          throw new BadTimeException();
         }
-    }
+        return date;
+      }
+
+    /* 
+     * Checks if the purchaseTime is valid
+     */  
+    public static LocalTime isValidLocalTime(String dateStr, DateTimeFormatter dateFormatter) {
+        LocalTime date = null;
+        try {
+          date = LocalTime.parse(dateStr, dateFormatter);
+        } catch (DateTimeParseException e) {
+          throw new BadTimeException();
+        }
+        return date;
+      }
 }

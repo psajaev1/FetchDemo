@@ -1,5 +1,5 @@
 ## FetchDemo
-Demo for Fetch coding assessment. This test was done using Spring boot and gradle. I also created a Dockerfile for this to be run. 
+Demo for Fetch coding assessment. This test was done using Spring boot and gradle. Dockerfile is provided for running this application locally. 
 
 # Running the application 
 Clone the directory and enter the root level 
@@ -46,15 +46,15 @@ POST endpoint
 GET endpoint 
 `curl --location 'http://localhost:8083/receipts/f3d78f16-2247-486f-a07d-0606aa117367/points'`
 
+# Error Handling  
+
+For error handling, the POST endpoint will return a custom exception with a 400 BAD_REQUEST when one of the fields is missing or improper date format
+GET endpoint will return a 404 when the receipt ID is not associated with what is stored. 
+Null checks are done for all of the reciept object fields and validation checks for dates are done.   
+Proper format for dates should be "yyyy-MM-dd" and "HH:mm"
+
 # In Memory Solution 
 I used a in memory solution to store the uuid and points for a reciept. I created a map bean that gets created at runtime and will exist while the application is running.   
 The map has reciept ID as the key and the points of the reciept as the value
 
-# Error Handling  
-
-For error handling, the POST endpoint will return a custom exception with a 400 BAD_REQUEST when one of the fields is missing.  
-GET endpoint will return a 404 when the receipt ID is not associated with what is stored. 
-
-# Other considerations 
-Other than doing null checks, there is no input validation on the reciept request body fields. We are assuming that the Request Body has the correct format for purchaseDate and purchaseTime when mapping it to a date. 
 

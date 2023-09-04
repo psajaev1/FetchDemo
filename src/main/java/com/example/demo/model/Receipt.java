@@ -13,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Receipt { 
 
-    @NonNull public String retailer;
+    @NonNull String retailer;
     @NonNull String purchaseDate; 
     @NonNull String purchaseTime; 
     @NonNull List<Item> items; 
