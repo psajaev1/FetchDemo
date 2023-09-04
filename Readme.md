@@ -50,8 +50,11 @@ GET endpoint
 
 For error handling, the POST endpoint will return a custom exception with a 400 BAD_REQUEST when one of the fields is missing or improper date format
 GET endpoint will return a 404 when the receipt ID is not associated with what is stored. 
-Null checks are done for all of the reciept object fields and validation checks for dates are done.   
-Proper format for dates should be "yyyy-MM-dd" and "HH:mm"
+Null checks are done for all of the reciept object fields. 
+
+# Date Validation Checks 
+Validation checks for dates are done to make sure the two fields aren't null and that they are in the correct format.  
+Proper format for dates should be "yyyy-MM-dd" and "HH:mm". 
 
 # In Memory Solution 
 I used a in memory solution to store the uuid and points for a reciept. I created a map bean that gets created at runtime and will exist while the application is running.   
