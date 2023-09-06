@@ -7,16 +7,15 @@ This API has two endpoints
 
 # Running the application 
 Clone the directory and enter the root level 
-1. `./gradlew build` -- this command will generate the JAR that the dockerfile uses
-2. `docker image build -t fetch-demo .` -- creates a docker image called fetch-demo using the generated JAR
-3. `docker container run --name fetch-demo -p 8083:8083 -d fetch-demo` -- starts a container on port 8083
+1. `docker image build -t fetch-demo .` -- creates a docker image called fetch-demo using the JAR in the build file
+2. `docker container run --name fetch-demo -p 8083:8083 -d fetch-demo` -- starts a container on port 8083
 
 After running these commands, the server will be available at localhost:8083
 
 
 # Testing the application 
 
-I was using the following CURL commands for testing this service. These examples were taken from the github test repo for this assignment.  
+I was using the following CURL commands for testing this service. This CURL was generated from Postman and these examples were taken from the github test repo for this assignment.  
 
 POST endpoint
 
@@ -49,7 +48,7 @@ POST endpoint
 }  
 '   
 
-GET endpoint 
+GET endpoint   
 `curl --location 'http://localhost:8083/receipts/f3d78f16-2247-486f-a07d-0606aa117367/points'`
 
 # Error Handling  
