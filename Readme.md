@@ -9,7 +9,7 @@ This API has two endpoints
 Clone the directory and enter the root level 
 1. `./gradlew build` -- this command will generate the JAR that the dockerfile uses
 2. `docker image build -t fetch-demo .` -- creates a docker image called fetch-demo using the generated JAR
-3. `docker container run --name fetch-demo -p 8083:8083 -d fetch-demo` -- starts a container of the service running on port 8083
+3. `docker container run --name fetch-demo -p 8083:8083 -d fetch-demo` -- starts a container on port 8083
 
 After running these commands, the server will be available at localhost:8083
 

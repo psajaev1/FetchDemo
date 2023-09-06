@@ -23,13 +23,22 @@ public class FetchController {
 
     @Autowired
     FetchService fetchService;
-    
+    /* 
+     * POST endpoint for processing and saving a receipt 
+     * @params @RequestBody Receipt
+     * @response IdResponse
+     */
     @PostMapping(value="/process")
     public ResponseEntity<IdResponse> saveReceipts(@NonNull @RequestBody Receipt request) {
         log.info("Saving a receipt");
         return ResponseEntity.ok().body(fetchService.processReceipt(request));
     }
 
+    /*
+     * GET endpoint for gettinga receipt point value by ID
+     * @params @PathVariable id
+     * @response @PointsResponse 
+     */
     @GetMapping("/{id}/points")
     public ResponseEntity<PointsResponse> getPoints(@PathVariable("id") String uuid) {
         log.info("Get receipt for " + uuid);

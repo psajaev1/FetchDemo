@@ -53,6 +53,20 @@ public class FetchServiceTest {
         assertThat(fetchService.getReceiptPoints(resp.getId()).getPoints()).isEqualTo(109);
     }
 
+    @Test
+    public void testReceiptProcessEdgeDate() {
+        Item item1 = new Item("Gatorade", "2.25");
+        Item item2 = new Item("Gatorade", "2.25");
+        Item item3 = new Item("Gatorade", "2.25");
+        Item item4 = new Item("Gatorade", "2.25");
+        List<Item> items = Arrays.asList(item1, item2, item3, item4);
+        
+        Receipt reciept = new Receipt("M&M Corner Market", "2022-03-20", "14:00", items, "9.00");
+        IdResponse resp = fetchService.processReceipt(reciept);
+        
+        assertThat(fetchService.getReceiptPoints(resp.getId()).getPoints()).isEqualTo(99);
+    }
+
     @Test 
     public void badDate() {
         Item item1 = new Item("Gatorade", "2.25");
